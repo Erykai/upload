@@ -49,6 +49,22 @@ if (!$upload->save()) {
     return false;
 }
 print_r($upload->getResponse());
+
+//case create object 
+        $file = false;
+        if($upload->save()){
+        $user = new stdClass();
+            foreach ($upload->getResponse() as $key => $value) {
+                $user->$key = $value;
+                $file = true;
+            }
+        }
+//case delete
+        if($file){
+           $upload->delete();
+        }
+//case delete file
+$upload->delete("storage/image/2022/08/10/imagem.jpg");
 ```
 
 ## Contribution
