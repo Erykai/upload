@@ -34,4 +34,24 @@ class Upload extends Resource
         }
         return true;
     }
+
+    /**
+     * @param string|null $path
+     * @return bool
+     */
+    public function delete(?string $path = null): bool
+    {
+        $dir = dirname(__DIR__). "/";
+        if($path){
+            if(!unlink($dir . $path))
+            {
+                $this->setError('file not exist');
+                return false;
+            }
+        }
+        foreach ($this->getResponse() as $value) {
+            unlink($dir . $value);
+        }
+        return true;
+    }
 }
