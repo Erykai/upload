@@ -41,7 +41,7 @@ class Upload extends Resource
      */
     public function delete(?string $path = null): bool
     {
-        $dir = dirname(__DIR__). "/";
+        $dir = dirname(__DIR__, 3) . "/";
         if($path){
             if(!unlink($dir . $path))
             {

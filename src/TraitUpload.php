@@ -15,7 +15,7 @@ trait TraitUpload
     protected function createDir(string $path): void
     {
         $folders = explode("/", $path);
-        $dir = dirname(__DIR__);
+        $dir = dirname(__DIR__, 3);
         foreach ($folders as $folder)
         {
             $dir .= "/" . $folder;
