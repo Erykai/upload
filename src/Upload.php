@@ -7,7 +7,7 @@ namespace Erykai\Upload;
  */
 class Upload extends Resource
 {
-
+    
     /**
      * @return bool
      */
@@ -53,5 +53,21 @@ class Upload extends Resource
             unlink($dir . $value);
         }
         return true;
+    }
+
+    /**
+     * @return object
+     */
+    public function response(): object
+    {
+        return $this->getResponse();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function error(): ?string
+    {
+        return $this->getError();
     }
 }

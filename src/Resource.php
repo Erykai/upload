@@ -108,7 +108,7 @@ class Resource
     /**
      * @return object
      */
-    public function getResponse(): object
+    protected function getResponse(): object
     {
         return (object) $this->response;
     }
@@ -125,7 +125,7 @@ class Resource
     /**
      * @return string|null
      */
-    public function getError(): ?string
+    protected function getError(): ?string
     {
         return $this->error;
     }
