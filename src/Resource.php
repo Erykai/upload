@@ -63,7 +63,7 @@ class Resource
                 $file['ext'] = pathinfo($file['name'], PATHINFO_EXTENSION);
                 $file['name'] = $this->slug(pathinfo($file['name'], PATHINFO_FILENAME));
                 $file['path'] = $this->getPath();
-                $file['directory'] = dirname(__DIR__, 3) . "/" . $this->getPath();
+                $file['directory'] = dirname(__DIR__, 4) . "/" . $this->getPath();
                 $files[] = (object)$file;
             }
             $this->files = (object)$files;
