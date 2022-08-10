@@ -7,7 +7,7 @@ use Erykai\Upload\Upload;
 $upload = new Upload();
 
 if (!$upload->save()) {
-    echo $upload->getError();
+    echo $upload->error();
     return false;
 }
-print_r($upload->getResponse());
+print_r($upload->response());

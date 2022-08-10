@@ -6,7 +6,7 @@ Upload media, files and images
 Composer:
 
 ```bash
-"erykai/upload": "1.0.*"
+"erykai/upload": "1.1.*"
 ```
 
 Terminal
@@ -45,16 +45,16 @@ use Erykai\Upload\Upload;
 $upload = new Upload();
 
 if (!$upload->save()) {
-    echo $upload->getError();
+    echo $upload->error();
     return false;
 }
-print_r($upload->getResponse());
+print_r($upload->response());
 
 //case create object 
         $file = false;
         if($upload->save()){
         $user = new stdClass();
-            foreach ($upload->getResponse() as $key => $value) {
+            foreach ($upload->response() as $key => $value) {
                 $user->$key = $value;
                 $file = true;
             }
