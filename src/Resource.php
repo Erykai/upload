@@ -2,12 +2,15 @@
 
 namespace Erykai\Upload;
 
+use stdClass;
+
 /**
  * Class resource upload
  */
 class Resource
 {
     use TraitUpload;
+
     /**
      * @var object|null
      */
@@ -21,19 +24,49 @@ class Resource
      */
     private ?array $mimeType;
     /**
-     * @var array
+     * @var object
      */
-    private array $response;
+    private object $data;
     /**
-     * @var string|null
+     * @var object
      */
-    private ?string $error = null;
+    private object $response;
+
     /**
      *
      */
     public function __construct()
     {
         $this->setFiles();
+    }
+    /**
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        if (empty($this->data)) {
+            $this->data = new stdClass();
+        }
+
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->data->$name;
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function __isset($name)
+    {
+        return isset($this->data->$name);
     }
     /**
      * @return object|null
@@ -54,7 +87,7 @@ class Resource
             $files = [];
             foreach ($upload as $key => $file) {
                 if (!in_array($file['type'], $this->getMimeType(), true)) {
-                    $this->setError("invalid file format " . $file['type']);
+                    $this->setResponse(400, "error","invalid file format ".$file['type'], dynamic: $file['type'] );
                     return false;
                 }
                 [$type] = explode("/", $file['type']);
@@ -67,7 +100,7 @@ class Resource
                 $files[] = (object)$file;
             }
             $this->files = (object)$files;
-        }else{
+        } else {
             $this->files = null;
         }
         return true;
@@ -108,34 +141,43 @@ class Resource
     /**
      * @return object
      */
-    protected function getResponse(): object
+    protected function getData(): object
     {
-        return (object) $this->response;
+        return $this->data;
     }
 
     /**
      * @param string $key
-     * @param string $response
+     * @param string $value
      */
-    protected function setResponse(string $key, string $response): void
+    protected function setData(string $key, string $value): void
     {
-        $this->response[$key] = $response;
+        $this->data->$key = $value;
     }
 
     /**
-     * @return string|null
+     * @return object
      */
-    protected function getError(): ?string
+    protected function getResponse(): object
     {
-        return $this->error;
+        return $this->response;
     }
 
     /**
-     * @param string|null $error
+     * @param int $code
+     * @param string $type
+     * @param string $message
+     * @param object|null $data
+     * @param string|null $dynamic
      */
-    protected function setError(?string $error): void
+    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
     {
-        $this->error = $error;
+        $this->response = (object)[
+            "code" => $code,
+            "type" => $type,
+            "message" => $message,
+            "data" => $data,
+            "dynamic" => $dynamic
+        ];
     }
-
 }

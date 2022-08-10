@@ -13,7 +13,7 @@ class Upload extends Resource
      */
     public function save(): bool
     {
-        if($this->getError())
+        if($this->response()->type === 'error')
         {
             return false;
         }
@@ -30,8 +30,9 @@ class Upload extends Resource
                 $archive = $file->name . "-" . time(). mt_rand() . "." . $file->ext;
             }
             move_uploaded_file($file->tmp_name, $directory . $archive);
-            $this->setResponse($file->key,$path . $archive);
+            $this->setData($file->key, $path . $archive);
         }
+        $this->setResponse(200,"success","upload performed successfully",$this->getData());
         return true;
     }
 
@@ -45,13 +46,14 @@ class Upload extends Resource
         if($path){
             if(!unlink($dir . $path))
             {
-                $this->setError('file not exist');
+                $this->setResponse(404,"error","$path file not exist",dynamic: $path);
                 return false;
             }
         }
-        foreach ($this->getResponse() as $value) {
+        foreach ($this->response()->data as $value) {
             unlink($dir . $value);
         }
+        $this->setResponse(200,"success","file deleted successfully");
         return true;
     }
 
@@ -61,13 +63,5 @@ class Upload extends Resource
     public function response(): object
     {
         return $this->getResponse();
-    }
-
-    /**
-     * @return string|null
-     */
-    public function error(): ?string
-    {
-        return $this->getError();
     }
 }
