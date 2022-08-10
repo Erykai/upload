@@ -6,7 +6,7 @@ Upload media, files and images
 Composer:
 
 ```bash
-"erykai/upload": "1.1.*"
+"erykai/upload": "1.2.*"
 ```
 
 Terminal
@@ -43,18 +43,14 @@ require "vendor/autoload.php";
 use Erykai\Upload\Upload;
 
 $upload = new Upload();
-
-if (!$upload->save()) {
-    echo $upload->error();
-    return false;
-}
+$upload->save();
 print_r($upload->response());
 
 //case create object 
         $file = false;
         if($upload->save()){
         $user = new stdClass();
-            foreach ($upload->response() as $key => $value) {
+            foreach ($upload->response()->data as $key => $value) {
                 $user->$key = $value;
                 $file = true;
             }
@@ -62,9 +58,11 @@ print_r($upload->response());
 //case delete
         if($file){
            $upload->delete();
+           print_r($upload->response());
         }
 //case delete file
 $upload->delete("storage/image/2022/08/10/imagem.jpg");
+print_r($upload->response());
 ```
 
 ## Contribution

@@ -5,9 +5,5 @@ require "vendor/autoload.php";
 use Erykai\Upload\Upload;
 
 $upload = new Upload();
-
-if (!$upload->save()) {
-    echo $upload->error();
-    return false;
-}
+$upload->save();
 print_r($upload->response());
