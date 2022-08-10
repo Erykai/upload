@@ -57,6 +57,7 @@ class Resource
             $files = [];
             foreach ($upload as $key => $file) {
                 if (!in_array($file['type'], $this->getMimeType(), true)) {
+                    $this->files = null;
                     $this->setResponse(400, "error","invalid file format ".$file['type'], dynamic: $file['type'] );
                     return false;
                 }
