@@ -7,7 +7,7 @@ namespace Erykai\Upload;
  */
 class Upload extends Resource
 {
-    
+
     /**
      * @return bool
      */

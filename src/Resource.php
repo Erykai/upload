@@ -2,7 +2,6 @@
 
 namespace Erykai\Upload;
 
-use stdClass;
 
 /**
  * Class resource upload
@@ -24,9 +23,9 @@ class Resource
      */
     private ?array $mimeType;
     /**
-     * @var object
+     * @var array|object
      */
-    private object $data;
+    private array|object $data;
     /**
      * @var object
      */
@@ -38,35 +37,6 @@ class Resource
     public function __construct()
     {
         $this->setFiles();
-    }
-    /**
-     * @param $name
-     * @param $value
-     */
-    public function __set($name, $value)
-    {
-        if (empty($this->data)) {
-            $this->data = new stdClass();
-        }
-
-    }
-
-    /**
-     * @param $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        return $this->data->$name;
-    }
-
-    /**
-     * @param $name
-     * @return bool
-     */
-    public function __isset($name)
-    {
-        return isset($this->data->$name);
     }
     /**
      * @return object|null
@@ -103,6 +73,7 @@ class Resource
         } else {
             $this->files = null;
         }
+        $this->setResponse(200, "success","defined attribute");
         return true;
     }
 
@@ -143,7 +114,7 @@ class Resource
      */
     protected function getData(): object
     {
-        return $this->data;
+        return (object) $this->data;
     }
 
     /**
@@ -152,7 +123,7 @@ class Resource
      */
     protected function setData(string $key, string $value): void
     {
-        $this->data->$key = $value;
+        $this->data[$key] = $value;
     }
 
     /**
