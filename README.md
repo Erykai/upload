@@ -1,4 +1,12 @@
 # upload
+[![Maintainer](http://img.shields.io/badge/maintainer-@alexdeovidal-blue.svg?style=flat-square)](https://instagram.com/alexdeovidal)
+[![Source Code](http://img.shields.io/badge/source-erykai/upload-blue.svg?style=flat-square)](https://github.com/erykai/upload)
+[![PHP from Packagist](https://img.shields.io/packagist/php-v/erykai/upload.svg?style=flat-square)](https://packagist.org/packages/erykai/upload)
+[![Latest Version](https://img.shields.io/github/release/erykai/upload.svg?style=flat-square)](https://github.com/erykai/upload/releases)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Quality Score](https://img.shields.io/scrutinizer/g/erykai/upload.svg?style=flat-square)](https://scrutinizer-ci.com/g/erykai/upload)
+[![Total Downloads](https://img.shields.io/packagist/dt/erykai/upload.svg?style=flat-square)](https://packagist.org/packages/erykai/upload)
+
 Upload media, files and images
 
 ## Installation

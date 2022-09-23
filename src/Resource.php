@@ -6,7 +6,7 @@ namespace Erykai\Upload;
 /**
  * Class resource upload
  */
-class Resource
+abstract class Resource
 {
     use TraitUpload;
 
