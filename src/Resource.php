@@ -58,7 +58,7 @@ abstract class Resource
             foreach ($upload as $key => $file) {
                 if (!in_array($file['type'], $this->getMimeType(), true)) {
                     $this->files = null;
-                    $this->setResponse(400, "error","invalid file format ".$file['type'], dynamic: $file['type'] );
+                    $this->setResponse(400, "error","invalid file format ".$file['type'], "upload", dynamic: $file['type'] );
                     return false;
                 }
                 [$type] = explode("/", $file['type']);
@@ -74,7 +74,7 @@ abstract class Resource
         } else {
             $this->files = null;
         }
-        $this->setResponse(200, "success","defined attribute");
+        $this->setResponse(200, "success","defined attribute", "upload");
         return true;
     }
 
@@ -138,16 +138,18 @@ abstract class Resource
     /**
      * @param int $code
      * @param string $type
-     * @param string $message
+     * @param string $text
+     * @param string $model
      * @param object|null $data
      * @param string|null $dynamic
      */
-    protected function setResponse(int $code, string $type, string $message, ?object $data = null, ?string $dynamic = null): void
+    protected function setResponse(int $code, string $type, string $text, string $model, ?object $data = null, ?string $dynamic = null): void
     {
         $this->response = (object)[
             "code" => $code,
             "type" => $type,
-            "message" => $message,
+            "text" => $text,
+            "model" => $model,
             "data" => $data,
             "dynamic" => $dynamic
         ];

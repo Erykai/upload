@@ -31,7 +31,7 @@ class Upload extends Resource
             move_uploaded_file($file->tmp_name, $directory . $archive);
             $this->setData($file->key, $path . $archive);
         }
-        $this->setResponse(200,"success","upload performed successfully",$this->getData());
+        $this->setResponse(200,"success","upload performed successfully","upload",$this->getData());
         return true;
     }
 
@@ -45,14 +45,14 @@ class Upload extends Resource
         if($path){
             if(!unlink($dir . $path))
             {
-                $this->setResponse(404,"error","$path file not exist",dynamic: $path);
+                $this->setResponse(404,"error","$path file not exist","upload",dynamic: $path);
                 return false;
             }
         }
         foreach ($this->response()->data as $value) {
             unlink($dir . $value);
         }
-        $this->setResponse(200,"success","file deleted successfully");
+        $this->setResponse(200,"success","file deleted successfully","upload");
         return true;
     }
 
