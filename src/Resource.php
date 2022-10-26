@@ -30,12 +30,22 @@ abstract class Resource
      * @var object
      */
     private object $response;
+    /**
+     * @var string|null
+     */
+    protected ?string $url;
+    /**
+     * @var string|null
+     */
+    protected ?string $key;
 
     /**
      *
      */
-    public function __construct()
+    public function __construct(?string $url = null, ?string $key = null)
     {
+        $this->url = $url;
+        $this->key = $key;
         $this->setFiles();
     }
     /**
@@ -51,24 +61,43 @@ abstract class Resource
      */
     private function setFiles(): bool
     {
+        $files = [];
         if (!empty($_FILES)) {
             $this->setMimeType();
             $upload = $_FILES;
-            $files = [];
+
             foreach ($upload as $key => $file) {
-                if (!in_array($file['type'], $this->getMimeType(), true)) {
+                if (!in_array($file['type'], $this->getMimeType(), true) && !$this->url) {
                     $this->files = null;
                     $this->setResponse(400, "error","invalid file format ".$file['type'], "upload", dynamic: $file['type'] );
                     return false;
                 }
-                [$type] = explode("/", $file['type']);
-                $this->setPath($type);
-                $file['key'] = $key;
-                $file['ext'] = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $file['name'] = $this->slug(pathinfo($file['name'], PATHINFO_FILENAME));
-                $file['path'] = $this->getPath();
-                $file['directory'] = dirname(__DIR__, 4) . "/" . $this->getPath();
-                $files[] = (object)$file;
+
+                if($this->url)
+                {
+                    $url_array = explode("/", $this->url);
+                    $image_name = end($url_array);
+                    $image_array = explode(".", $image_name);
+
+                    $this->setPath('img');
+                    $file['key'] = $this->key;
+                    $file['ext'] = end($image_array);
+                    $file['name'] = $this->slug($image_name);
+                    $file['path'] = $this->getPath();
+                    $file['directory'] = dirname(__DIR__, 4) . "/" . $this->getPath();
+                    $files[] = (object)$file;
+                }else{
+                    [$type] = explode("/", $file['type']);
+                    $this->setPath($type);
+                    $file['key'] = $key;
+                    $file['ext'] = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $file['name'] = $this->slug(pathinfo($file['name'], PATHINFO_FILENAME));
+                    $file['path'] = $this->getPath();
+                    $file['directory'] = dirname(__DIR__, 4) . "/" . $this->getPath();
+                    $files[] = (object)$file;
+                }
+
+
             }
             $this->files = (object)$files;
         } else {

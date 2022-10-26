@@ -7,7 +7,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/erykai/upload.svg?style=flat-square)](https://scrutinizer-ci.com/g/erykai/upload)
 [![Total Downloads](https://img.shields.io/packagist/dt/erykai/upload.svg?style=flat-square)](https://packagist.org/packages/erykai/upload)
 
-Upload media, files and images
+Upload media, files, images and upload url
 
 ## Installation
 
@@ -49,7 +49,9 @@ require "config.php";
 require "vendor/autoload.php";
 
 use Erykai\Upload\Upload;
-
+//upload url 
+// $url = 'https://site.com/image.png';
+// $upload = new Upload($url, 'cover');
 $upload = new Upload();
 $upload->save();
 print_r($upload->response());

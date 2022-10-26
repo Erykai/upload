@@ -28,7 +28,12 @@ class Upload extends Resource
             if(file_exists($directory .$archive)){
                 $archive = $file->name . "-" . time(). mt_rand() . "." . $file->ext;
             }
-            move_uploaded_file($file->tmp_name, $directory . $archive);
+            if(!empty($file->tmp_name)){
+                move_uploaded_file($file->tmp_name, $directory . $archive);
+            }else{
+                file_put_contents($directory . $archive, file_get_contents($this->url));
+            }
+
             $this->setData($file->key, $path . $archive);
         }
         $this->setResponse(200,"success","upload performed successfully","upload",$this->getData());
