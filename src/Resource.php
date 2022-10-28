@@ -63,8 +63,8 @@ abstract class Resource
     {
         $upload = (object) $this->files;
         if(isset($upload->upload_file) && isset($upload->upload_url)){
-            $key = $upload->upload_url->key;
-            $upload->upload_file->$key = $upload->upload_url;
+            $key = $this->key;
+            $upload->upload_file->$key = $upload->upload_url->$key;
             $this->files = $upload->upload_file;
             unset($upload->upload_file, $upload->upload_url);
         }
@@ -95,7 +95,6 @@ abstract class Resource
             $this->setResponse(200, "success", "defined attribute", "upload");
             return true;
         }
-        $this->setResponse(400, "error", "file not sent", "upload");
         return false;
     }
 

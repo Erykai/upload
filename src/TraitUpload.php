@@ -4,6 +4,7 @@ namespace Erykai\Upload;
 
 use finfo;
 use RuntimeException;
+use stdClass;
 
 /**
  * Class Trait Upload
@@ -72,7 +73,7 @@ trait TraitUpload
     {
         $upload = $_FILES;
         foreach ($upload as $key => $file) {
-            $this->file = new \stdClass();
+            $this->file = new stdClass();
             if (!$this->mimetype($file)) {
                 return false;
             }
@@ -92,17 +93,19 @@ trait TraitUpload
      */
     protected function uploadUrl(): bool
     {
-        $this->file = new \stdClass();
+        $this->file = new stdClass();
         $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime_type = $finfo->buffer(file_get_contents($this->url));
         $file['type'] = $mime_type;
+
         if (!$this->mimetype($file)) {
             return false;
         }
+
         $url_array = explode("/", $this->url);
         $file['name'] = end($url_array);
         $this->mountFile($file, $this->key);
-        $files = (object)$this->file;
+        $files[$this->key] = (object)$this->file;
         $this->files['upload_url'] = (object)$files;
         return true;
     }
