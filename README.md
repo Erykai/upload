@@ -1,4 +1,5 @@
 # upload
+
 [![Maintainer](http://img.shields.io/badge/maintainer-@alexdeovidal-blue.svg?style=flat-square)](https://instagram.com/alexdeovidal)
 [![Source Code](http://img.shields.io/badge/source-erykai/upload-blue.svg?style=flat-square)](https://github.com/erykai/upload)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/erykai/upload.svg?style=flat-square)](https://packagist.org/packages/erykai/upload)
@@ -42,35 +43,62 @@ const UPLOAD_MIMETYPE = [
 ];
 ```
 
-Create upload.php
+Upload $_FILES
 
 ```php
 require "config.php";
 require "vendor/autoload.php";
 
 use Erykai\Upload\Upload;
-//upload url 
-// $url = 'https://site.com/image.png';
-// $upload = new Upload($url, 'cover');
 $upload = new Upload();
 $upload->save();
 print_r($upload->response());
+```
 
-//case create object 
-        $file = false;
-        if($upload->save()){
+Upload $_POST url
+
+```php
+require "config.php";
+require "vendor/autoload.php";
+
+use Erykai\Upload\Upload;
+$upload = new Upload($_POST['cover'], 'cover');
+$upload->save();
+print_r($upload->response());
+```
+
+Upload url
+
+```php
+require "config.php";
+require "vendor/autoload.php";
+
+use Erykai\Upload\Upload;
+$upload = new Upload('https://web.com/pdf.pdf', 'document');
+$upload->save();
+print_r($upload->response());
+```
+
+Create object and delete
+
+```php
+if($upload->save()){
         $user = new stdClass();
             foreach ($upload->response()->data as $key => $value) {
                 $user->$key = $value;
                 $file = true;
             }
-        }
-//case delete
+        }   
+        //case delete
         if($file){
            $upload->delete();
            print_r($upload->response());
         }
-//case delete file
+```
+
+Delete image
+ 
+```php
 $upload->delete("storage/image/2022/08/10/imagem.jpg");
 print_r($upload->response());
 ```
@@ -80,7 +108,6 @@ print_r($upload->response());
 All contributions will be analyzed, if you make more than one change, make the commit one by one.
 
 ## Support
-
 
 If you find faults send an email reporting to webav.com.br@gmail.com.
 

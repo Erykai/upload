@@ -20,24 +20,11 @@ class Upload extends Resource
         {
             return false;
         }
-        foreach ($this->getFiles() as $file) {
-            $this->createDir($file->path);
-            $archive = $file->name . "." . $file->ext;
-            $directory = $file->directory . "/";
-            $path = $file->path . "/";
-            if(file_exists($directory .$archive)){
-                $archive = $file->name . "-" . time(). mt_rand() . "." . $file->ext;
-            }
-            if(!empty($file->tmp_name)){
-                move_uploaded_file($file->tmp_name, $directory . $archive);
-            }else{
-                file_put_contents($directory . $archive, file_get_contents($this->url));
-            }
-
-            $this->setData($file->key, $path . $archive);
+        if($this->upload()) {
+            $this->setResponse(200, "success", "upload performed successfully", "upload", $this->getData());
+            return true;
         }
-        $this->setResponse(200,"success","upload performed successfully","upload",$this->getData());
-        return true;
+        return false;
     }
 
     /**

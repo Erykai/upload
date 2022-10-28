@@ -3,6 +3,8 @@
 namespace Erykai\Upload;
 
 
+use stdClass;
+
 /**
  * Class resource upload
  */
@@ -11,9 +13,9 @@ abstract class Resource
     use TraitUpload;
 
     /**
-     * @var object|null
+     * @var object|array|null
      */
-    private ?object $files;
+    private $files;
     /**
      * @var string
      */
@@ -34,6 +36,11 @@ abstract class Resource
      * @var string|null
      */
     protected ?string $url;
+
+    /**
+     * @var stdClass
+     */
+    protected stdClass $file;
     /**
      * @var string|null
      */
@@ -45,15 +52,31 @@ abstract class Resource
     public function __construct(?string $url = null, ?string $key = null)
     {
         $this->url = $url;
-        $this->key = $key;
+        $this->key = $key ?? 'file';
         $this->setFiles();
     }
+
     /**
      * @return object|null
      */
     protected function getFiles(): ?object
     {
-        return $this->files;
+        $upload = (object) $this->files;
+        if(isset($upload->upload_file) && isset($upload->upload_url)){
+            $key = $upload->upload_url->key;
+            $upload->upload_file->$key = $upload->upload_url;
+            $this->files = $upload->upload_file;
+            unset($upload->upload_file, $upload->upload_url);
+        }
+        if(isset($upload->upload_file)){
+            $this->files = $upload->upload_file;
+            unset($upload->upload_file);
+        }
+        if(isset($upload->upload_url)){
+            $this->files = $upload->upload_url;
+            unset($upload->upload_url);
+        }
+        return (object) $this->files;
     }
 
     /**
@@ -61,42 +84,19 @@ abstract class Resource
      */
     private function setFiles(): bool
     {
-        $files = [];
+        $this->setMimeType();
         if (!empty($_FILES)) {
-            $this->setMimeType();
-            $upload = $_FILES;
-            foreach ($upload as $key => $file) {
-                if($this->url)
-                {
-                    $url_array = explode("/", $this->url);
-                    $file['name'] = end($url_array);
-                    $finfo = new \finfo(FILEINFO_MIME_TYPE);
-                    $mime_type = $finfo->buffer(file_get_contents($this->url));
-                    $file['type'] = $mime_type;
-                    $file['key'] = $this->key;
-                }
-                else{
-                    $file['key'] = $key;
-                }
-                [$type] = explode("/", $file['type']);
-                $this->setPath($type);
-                $file['ext'] = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $file['name'] = $this->slug(pathinfo($file['name'], PATHINFO_FILENAME));
-                $file['path'] = $this->getPath();
-                $file['directory'] = dirname(__DIR__, 4) . "/" . $this->getPath();
-                $files[] = (object)$file;
-                if (!in_array($file['type'], $this->getMimeType(), true)) {
-                    $this->files = null;
-                    $this->setResponse(400, "error","invalid file format ".$file['type'], "upload", dynamic: $file['type'] );
-                    return false;
-                }
-            }
-            $this->files = (object)$files;
-        } else {
-            $this->files = null;
+            $this->uploadFiles();
         }
-        $this->setResponse(200, "success","defined attribute", "upload");
-        return true;
+        if ($this->url) {
+            $this->uploadUrl();
+        }
+        if (isset($this->files)) {
+            $this->setResponse(200, "success", "defined attribute", "upload");
+            return true;
+        }
+        $this->setResponse(400, "error", "file not sent", "upload");
+        return false;
     }
 
     /**
@@ -136,7 +136,7 @@ abstract class Resource
      */
     protected function getData(): object
     {
-        return (object) $this->data;
+        return (object)$this->data;
     }
 
     /**
