@@ -152,7 +152,17 @@ abstract class Resource
      */
     protected function getResponse(): object
     {
-        return $this->response;
+        if(isset($this->response)){
+            return $this->response;
+        }
+        $this->setResponse(
+            404,
+            "error",
+            'response must not be accessed before initialization ' . __METHOD__,
+            "upload",
+            dynamic: __METHOD__
+        );
+        return $this->getResponse();
     }
 
     /**
@@ -165,6 +175,7 @@ abstract class Resource
      */
     protected function setResponse(int $code, string $type, string $text, string $model, ?object $data = null, ?string $dynamic = null): void
     {
+        http_response_code($code);
         $this->response = (object)[
             "code" => $code,
             "type" => $type,
