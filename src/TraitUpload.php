@@ -105,6 +105,7 @@ trait TraitUpload
         $url_array = explode("/", $this->url);
         $file['name'] = end($url_array);
         $this->mountFile($file, $this->key);
+        $files = array();
         $files[$this->key] = (object)$this->file;
         $this->files['upload_url'] = (object)$files;
         return true;
